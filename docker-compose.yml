@@ -1,0 +1,30 @@
+### ENV
+#
+# TEMPLATE_NAME = matrix
+#
+# ref.: https://hub.docker.com/r/tarampampam/error-pages
+
+version: '3.4'
+
+services:
+  ligero:
+    image: tarampampam/error-pages:1.4.0
+    environment:
+      - TEMPLATE_NAME
+    networks:
+      - web
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+      labels:
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=HostRegexp:{catchall:.*}"
+        - "traefik.frontend.priority=1"
+        - "traefik.backend=error-pages"
+        - "traefik.port=8080"
+        
+networks:
+  web:
+    external:
+      name: web
